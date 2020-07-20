@@ -24,6 +24,8 @@ for (ed in unique(france_salary$EdLevel)) {
   }
   if (verbose) {message(paste("Mean salary for", ed, "is", mean_salary))}
 }
+salaries = salaries[order(-salaries$Salary),]
+barplot(salaries$Salary, names.arg = salaries$EdLevel)
 write.csv(x = salaries, file = "C:/Users/Luiz Gustavo/Documents/MEGA/Git/GitHub/BootCampDataScientist/Material/Modulo1/Desafio/salaries_france.csv")
 
 # Preparing Chile salaries barplot
@@ -42,4 +44,38 @@ for (sat in unique(chile_salary$JobSat)) {
   }
   if (verbose) {message(paste("Mean salary for", sat, "is", mean_salary))}
 }
+salaries = salaries[order(-salaries$Salary),]
+barplot(salaries$Salary, names.arg = salaries$JobSat)
 write.csv(x = salaries, file = "C:/Users/Luiz Gustavo/Documents/MEGA/Git/GitHub/BootCampDataScientist/Material/Modulo1/Desafio/salaries_chile.csv")
+
+dev.off()
+
+# Operational systems for France
+columns_fr = c("OpSys", "Country")
+france_opsys = dataset[,columns_fr]
+france_opsys = france_opsys[france_opsys$Country == 'France',]
+france_opsys = na.omit(france_opsys)
+opsys = list()
+for (os in unique(france_opsys$OpSys)) {
+  opsys[[os]] = length(france_opsys$OpSys[france_opsys$OpSys == os])
+}
+print(opsys)
+save(opsys, file = "C:/Users/Luiz Gustavo/Documents/MEGA/Git/GitHub/BootCampDataScientist/Material/Modulo1/Desafio/france_opsys.RData")
+
+# Albania Age vs Salary
+cols_alb = c("Age", "Country", "ConvertedComp")
+alb_salaries = dataset[,cols_alb]
+alb_salaries = alb_salaries[alb_salaries$Country == "Albania",]
+alb_salaries = na.omit(alb_salaries)
+alb_salaries = alb_salaries[alb_salaries$ConvertedComp < 1e5,] # remove outliers
+# Mean salary
+mean_alb_salaries = c()
+for (age in unique(alb_salaries$Age)) {
+  mean_alb_salaries = c(mean_alb_salaries, mean(alb_salaries$ConvertedComp[alb_salaries$Age == age]))
+}
+
+data = list(x = unique(alb_salaries$Age), y = mean_alb_salaries)
+linear = lm(y ~ x, data)
+
+plot(x = data$x, y = data$y)
+abline(linear)
