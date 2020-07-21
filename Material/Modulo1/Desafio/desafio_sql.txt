@@ -1,0 +1,21 @@
+Crie uma consulta em SQL e responda: Quantos empregados do departamento 5 trabalham mais de 10h por
+semana no projeto chamado "ProductX"?
+
+Crie uma consulta em SQL e responda: Quantos empregados possuem um dependente com o mesmo primeiro
+nome que o deles?
+
+Crie uma consulta em SQL e responda: Quais os nomes de todos os empregados que são diretamente
+supervisionados por Franklin Wong
+
+Crie uma consulta em SQL e responda: Quem é a pessoa que possui mais tempo de alocação no
+projeto 'Newbenefits'?
+
+Crie uma consulta em SQL e responda: Qual é a soma dos salários de todos os empregados do
+departamento chamado 'Research'?
+
+Crie uma consulta em SQL e responda: Qual seria o custo do projeto com folha salarial
+(soma de todos os salários) caso a empresa desse 10% de aumento para todos os empregados que
+trabalham no projeto 'ProductX'?
+
+Crie uma consulta em SQL e responda: Qual o nome do departamento com a menor média de salário
+entre seus funcionários?
