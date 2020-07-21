@@ -79,3 +79,31 @@ linear = lm(y ~ x, data)
 
 plot(x = data$x, y = data$y)
 abline(linear)
+
+# Mean and median of Brazil salary
+cols_br = c("ConvertedComp", "Country")
+br_salary = dataset[,cols_br]
+br_salary = br_salary[br_salary$Country == 'Brazil',]
+summary(br_salary$ConvertedComp)
+
+# Greater number of developers without formal education
+cols = c("EdLevel", "Country")
+devs = dataset[,cols]
+devs = devs[devs$Country != 'United States',]
+devs = devs[devs$EdLevel == "I never completed any formal education",]
+devs = na.omit(devs)
+devs_per_country = c()
+for (ctry in unique(devs$Country)) {
+  devs_per_country[ctry] = nrow(devs[devs$Country == ctry,])
+}
+devs_per_country[order(-devs_per_country)]
+
+# Brazil´s devs first age code
+cols = c("Country", "Age1stCode")
+br_devs = dataset[,cols]
+br_devs = br_devs[br_devs$Country == 'Brazil',]
+devs_per_age = c()
+for (age in unique(br_devs$Age1stCode)) {
+  devs_per_age[age] = nrow(br_devs[br_devs$Age1stCode == age,])
+}
+devs_per_age[order(-devs_per_age)]
