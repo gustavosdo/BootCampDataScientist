@@ -1,0 +1,55 @@
+sudo rm -r /usr/local/hadoop/tmp/*
+cd /usr/local/hadoop/
+bin/hdfs namenode -format
+sbin/start-all.sh
+jps
+bin/hdfs dfs -mkdir /Desafio
+bin/hdfs dfs -put Dados/covidData.txt /Desafio/.
+cd ../hive
+rm -rf metastore_db/
+bin/schematool -initSchema -dbType derby
+bin/hive
+create database dbDesafio;
+
+CREATE TABLE DadosCovid (dataOcorrencia STRING, siglaPais STRING, descPais STRING, regiao STRING, novosCasos INT, casosAcumulados INT, novosObitos INT, obitosAcumulados INT) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' STORED AS TEXTFILE LOCATION '/hive/dbDesafio/CovidData';
+
+LOAD DATA INPATH 'hdfs://localhost:54310/Desafio/covidData.txt' INTO TABLE DadosCovid;
+
+SELECT COUNT(*) FROM DadosCovid; (17705)
+
+SELECT COUNT(*) FROM DadosCovid WHERE siglaPais = 'BR'; (92)
+
+SELECT COUNT(*) FROM DadosCovid WHERE descPais = 'Uruguay'; (74)
+
+SELECT AVG(novosCasos) FROM DadosCovid WHERE descPais = 'France'; (1141.632)
+
+SELECT SUM(novosCasos), SUM(novosObitos) FROM DadosCovid WHERE dataOcorrencia = '2020-05-26T00:00:00Z'; (99023	1493)
+
+DESCRIBE EXTENDED DadosCovid;
+
+OK
+dataocorrencia      	string              	                    
+siglapais           	string              	                    
+descpais            	string              	                    
+regiao              	string              	                    
+novoscasos          	int                 	                    
+casosacumulados     	int                 	                    
+novosobitos         	int                 	                    
+obitosacumulados    	int                 	                    
+	 	 
+Detailed Table Information	Table(tableName:dadoscovid, dbName:default, owner:igti, createTime:1598130202, lastAccessTime:0, retention:0, sd:StorageDescriptor(cols:[FieldSchema(name:dataocorrencia, type:string, comment:null), FieldSchema(name:siglapais, type:string, comment:null), FieldSchema(name:descpais, type:string, comment:null), FieldSchema(name:regiao, type:string, comment:null), FieldSchema(name:novoscasos, type:int, comment:null), FieldSchema(name:casosacumulados, type:int, comment:null), FieldSchema(name:novosobitos, type:int, comment:null), FieldSchema(name:obitosacumulados, type:int, comment:null)], location:hdfs://localhost:54310/hive/dbDesafio/CovidData, inputFormat:org.apache.hadoop.mapred.TextInputFormat, outputFormat:org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat, compressed:false, numBuckets:-1, serdeInfo:SerDeInfo(name:null, serializationLib:org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe, parameters:{serialization.format=,, line.delim=\n, field.delim=,}), bucketCols:[], sortCols:[], parameters:{}, skewedInfo:SkewedInfo(skewedColNames:[], skewedColValues:[], skewedColValueLocationMaps:{}), storedAsSubDirectories:false), partitionKeys:[], parameters:{totalSize=929317, numRows=0, rawDataSize=0, numFiles=1, transient_lastDdlTime=1598130362, bucketing_version=2}, viewOriginalText:null, viewExpandedText:null, tableType:MANAGED_TABLE, rewriteEnabled:false, catName:hive, ownerType:USER)	
+Time taken: 0.385 seconds, Fetched: 10 row(s)
+
+SELECT CONCAT(dataOcorrencia, " ", siglaPais, " ", descPais) from DadosCovid WHERE novosCasos = 501; (2020-03-11T00:00:00Z ES Spain)
+
+SELECT regiao, COUNT(1) FROM DadosCovid GROUP BY regiao ORDER BY regiao;
+
+	118
+AFRO	3417
+AMRO	4079
+EMRO	1816
+EURO	5431
+SEARO	970
+WPRO	1874
+
+SELECT COUNT(1) FROM DadosCovid WHERE regiao = 'EURO'; (5431)
